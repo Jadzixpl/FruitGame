@@ -142,6 +142,13 @@ int main(void) {
     wall5.setFillColor(sf::Color::Transparent);
     wall5.setPosition(846.f, 400.f);
 
+    for (int i = 0; i < 50; i++) //losowanie owoców do tablicy -------------------------------------------------
+    {
+        tab[i] = Fruit();
+    }
+
+
+
     
     while (window.isOpen()) {
         sf::Event event;
