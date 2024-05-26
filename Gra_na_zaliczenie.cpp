@@ -147,6 +147,7 @@ int main(void) {
         tab[i] = Fruit();
     }
 
+
     
     while (window.isOpen()) {
         sf::Event event;
