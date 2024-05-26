@@ -28,6 +28,7 @@ long int totalScore = 0;
 
 Fruit* tab = new Fruit[50]; //tablica do przechowywania owoców
 
+int currentFruit = 0;
 
 
 int main(void) {
@@ -50,18 +51,6 @@ int main(void) {
 
     sf::Texture pajak;
 
-    sf::Texture jablko;
-    jablko.loadFromFile("apyl.png");
-
-    sf::Texture gruszka;
-    gruszka.loadFromFile("gruszka.png");
-
-    sf::Texture banan;
-    banan.loadFromFile("banan.png");
-
-    sf::Texture winogrona;
-    winogrona.loadFromFile("winogrona.png");
-   
     //postać
     sf::Sprite character;
     character.setTexture(postac);
@@ -117,37 +106,24 @@ int main(void) {
     score.setCharacterSize(40);
     score.setPosition(10.f ,10.f);
 
-    //niewidzialne ściany
-    sf::RectangleShape wall0(sf::Vector2f(96.f, 48.f));
-    wall0.setFillColor(sf::Color::Transparent);
-    wall0.setPosition(58.f, 100.f);
+    //niewidzialne ściany----------------------------------------------------------------------------------------
+    Wall wall0(sf::Vector2f(58.f, 100.f));
 
-    sf::RectangleShape wall1(sf::Vector2f(96.f, 48.f));
-    wall1.setFillColor(sf::Color::Transparent);
-    wall1.setPosition(58.f, 250.f);
+    Wall wall1(sf::Vector2f(58.f, 250.f));
 
-    sf::RectangleShape wall2(sf::Vector2f(96.f, 48.f));
-    wall2.setFillColor(sf::Color::Transparent);
-    wall2.setPosition(58.f, 400.f);
+    Wall wall2(sf::Vector2f(58.f, 400.f));
+    
+    Wall wall3(sf::Vector2f(846.f, 100.f));
+    
+    Wall wall4(sf::Vector2f(846.f, 250.f));
 
-    sf::RectangleShape wall3(sf::Vector2f(96.f, 48.f));
-    wall3.setFillColor(sf::Color::Transparent);
-    wall3.setPosition(846.f, 100.f);
+    Wall wall5(sf::Vector2f(846.f, 400.f));
 
-    sf::RectangleShape wall4(sf::Vector2f(96.f, 48.f));
-    wall4.setFillColor(sf::Color::Transparent);
-    wall4.setPosition(846.f, 250.f);
 
-    sf::RectangleShape wall5(sf::Vector2f(96.f, 48.f));
-    wall5.setFillColor(sf::Color::Transparent);
-    wall5.setPosition(846.f, 400.f);
-
-    for (int i = 0; i < 50; i++) //losowanie owoców do tablicy -------------------------------------------------
+    for (int i = 0; i < 50; i++) //losowanie owoców do tablicy --------------------------------------------------
     {
         tab[i] = Fruit();
     }
-
-
     
     while (window.isOpen()) {
         sf::Event event;
@@ -174,7 +150,7 @@ int main(void) {
             character.move(0.f, 0.1f);
         }
 
-        //kolizja ścian
+        //kolizja ścian postaci ---------------------------------------------------------------------------------------
        if (character.getPosition().x < 0)
             character.setPosition(0, character.getPosition().y);
 
@@ -262,8 +238,11 @@ int main(void) {
                 character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
         }
         
+        
         //render owoców-------------------------------------------------------------------------------
-        srand(static_cast<unsigned>(time(0))); //1-jabłko 2-gruszka 3- banan 4-winogrono
+        srand(static_cast<unsigned>(time(0)));
+        
+        int placeForFruit = rand() % 6 + 1; //miejsca//1-jabłko 2-gruszka 3- banan 4-winogrono
 
         sf::Clock clock;
         
@@ -275,12 +254,12 @@ int main(void) {
                if (elapsed.asSeconds() > 5.0f)
                {
 
-                   /*switch (placeForFruit)
+                   switch (placeForFruit)
                    {
                    case 1:
                        if (taken1 == false)
                        {
-                           this->location = space1;
+                           tab[currentFruit].location = space1;
                            taken1 = true;
                        }
                        else
@@ -331,8 +310,6 @@ int main(void) {
                        break;
                    }
 
-                   sprite.setPosition(this->location);*/
-
                    clock.restart();
                }
             }
@@ -382,12 +359,12 @@ int main(void) {
 
         window.draw(score);
 
-        window.draw(wall0);
-        window.draw(wall1);
-        window.draw(wall2);
-        window.draw(wall3);
-        window.draw(wall4);
-        window.draw(wall5);
+        window.draw(wall0.setShape());
+        window.draw(wall1.setShape());
+        window.draw(wall2.setShape());
+        window.draw(wall3.setShape());
+        window.draw(wall4.setShape());
+        window.draw(wall5.setShape());
 
         window.display();
     }
