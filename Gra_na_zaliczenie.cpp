@@ -27,7 +27,7 @@ bool gameOver = true;
 long int totalScore = 0;
 
 Fruit* tab = new Fruit[50]; //tablica do przechowywania owoców
-int i = 0;
+
 
 
 int main(void) {
@@ -142,6 +142,11 @@ int main(void) {
     wall5.setFillColor(sf::Color::Transparent);
     wall5.setPosition(846.f, 400.f);
 
+    for (int i = 0; i < 50; i++) //losowanie owoców do tablicy -------------------------------------------------
+    {
+        tab[i] = Fruit();
+    }
+
     
     while (window.isOpen()) {
         sf::Event event;
@@ -150,7 +155,7 @@ int main(void) {
                 window.close();
         }
 
-        // poruszanie po ekranie postaci-------------------------------------
+        // poruszanie po ekranie postaci-------------------------------------------------------------------------
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
             character.move(0.1f, 0.f);
@@ -268,72 +273,65 @@ int main(void) {
 
                if (elapsed.asSeconds() > 5.0f)
                {
-                   if (i < 50)
+
+                   /*switch (placeForFruit)
                    {
-                       tab[i] = Fruit();
-                       tab[i].drawFruit(window);
-                       i++;
-
-                    
-
-                       /*switch (placeForFruit)
+                   case 1:
+                       if (taken1 == false)
                        {
-                       case 1:
-                           if (taken1 == false)
-                           {
-                               this->location = space1;
-                               taken1 = true;
-                           }
-                           else
-                               placeForFruit++;
-                           break;
-                       case 2:
-                           if (taken2 == false)
-                           {
-                               this->location = space2;
-                               taken2 = true;
-                           }
-                           else
-                               placeForFruit++;
-                           break;
-                       case 3:
-                           if (taken3 == false)
-                           {
-                               this->location = space3;
-                               taken3 = true;
-                           }
-                           else
-                               placeForFruit++;
-                           break;
-                       case 4:
-                           if (taken4 == false)
-                           {
-                               this->location = space4;
-                               taken4 = true;
-                           }
-                           else
-                               placeForFruit++;
-                           break;
-                       case 5:
-                           if (taken5 == false)
-                           {
-                               this->location = space5;
-                               taken5 = true;
-                           }
-                           else
-                               placeForFruit++;
-                           break;
-                       case 6:
-                           if (taken6 == false)
-                           {
-                               this->location = space6;
-                               taken6 = true;
-                           }
-                           break;
+                           this->location = space1;
+                           taken1 = true;
                        }
-
-                       sprite.setPosition(this->location);*/
+                       else
+                           placeForFruit++;
+                       break;
+                   case 2:
+                       if (taken2 == false)
+                       {
+                           this->location = space2;
+                           taken2 = true;
+                       }
+                       else
+                           placeForFruit++;
+                       break;
+                   case 3:
+                       if (taken3 == false)
+                       {
+                           this->location = space3;
+                           taken3 = true;
+                       }
+                       else
+                           placeForFruit++;
+                       break;
+                   case 4:
+                       if (taken4 == false)
+                       {
+                           this->location = space4;
+                           taken4 = true;
+                       }
+                       else
+                           placeForFruit++;
+                       break;
+                   case 5:
+                       if (taken5 == false)
+                       {
+                           this->location = space5;
+                           taken5 = true;
+                       }
+                       else
+                           placeForFruit++;
+                       break;
+                   case 6:
+                       if (taken6 == false)
+                       {
+                           this->location = space6;
+                           taken6 = true;
+                       }
+                       break;
                    }
+
+                   sprite.setPosition(this->location);*/
+
                    clock.restart();
                }
             }
@@ -357,7 +355,7 @@ int main(void) {
         //kosz
 
             for(int k = 0; k < i; k++)
-            if (keyPressedE && character.getGlobalBounds().intersects(box.getGlobalBounds()))
+            if (keyPressedE && character.getGlobalBounds().intersects(box.getGlobalBounds()) && appleInHand)
             {
                 appleInHand = false;
                 totalScore += tab[k].getPoints(); //chyba git?
