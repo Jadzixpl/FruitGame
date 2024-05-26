@@ -274,6 +274,8 @@ int main(void) {
                        tab[i].drawFruit(window);
                        i++;
 
+                    
+
                        /*switch (placeForFruit)
                        {
                        case 1:
