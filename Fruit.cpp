@@ -28,63 +28,6 @@ Fruit::Fruit() {
 		break;
 	}
 
-	/*switch (placeForFruit)
-	{
-	case 1:
-		if (taken1 == false)
-		{
-			this->location = space1;
-			taken1 = true;
-		}
-		else
-			placeForFruit++;
-		break;
-	case 2:
-		if (taken2 == false)
-		{
-			this->location = space2;
-			taken2 = true;
-		}
-		else
-			placeForFruit++;
-		break;
-	case 3:
-		if (taken3 == false)
-		{
-			this->location = space3;
-			taken3 = true;
-		}
-		else
-			placeForFruit++;
-		break;
-	case 4:
-		if (taken4 == false)
-		{
-			this->location = space4;
-			taken4 = true;
-		}
-		else
-			placeForFruit++;
-		break;
-	case 5:
-		if (taken5 == false)
-		{
-			this->location = space5;
-			taken5 = true;
-		}
-		else
-			placeForFruit++;
-		break;
-	case 6:
-		if (taken6 == false)
-		{
-			this->location = space6;
-			taken6 = true;
-		}
-		break;
-	}
-
-	sprite.setPosition(this->location);*/
 	sprite.setTexture(this->texture);
 }
 
