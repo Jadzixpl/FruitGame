@@ -1,6 +1,17 @@
 #include "Fruit.h"
 #include <iostream>
+#include <SFML/Graphics.hpp>
+#include <cstdlib>
+
 using namespace std;
+
+extern int kindOfFruit;
+
+extern sf::Texture jablko;
+extern sf::Texture gruszka;
+extern sf::Texture banan;
+extern sf::Texture winogrona;
+
 
 Fruit::Fruit() {
 
