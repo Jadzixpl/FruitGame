@@ -242,7 +242,6 @@ int main(void) {
         //render owoców-------------------------------------------------------------------------------
         srand(static_cast<unsigned>(time(0)));
         
-        int placeForFruit = rand() % 6 + 1; //miejsca//1-jabłko 2-gruszka 3- banan 4-winogrono
 
         sf::Clock clock;
         
@@ -259,7 +258,7 @@ int main(void) {
                    case 1:
                        if (taken1 == false)
                        {
-                           tab[currentFruit].location = space1;
+                           tab[currentFruit].setLocation(space1);
                            taken1 = true;
                        }
                        else
@@ -268,7 +267,7 @@ int main(void) {
                    case 2:
                        if (taken2 == false)
                        {
-                           this->location = space2;
+                           tab[currentFruit].setLocation(space2);
                            taken2 = true;
                        }
                        else
@@ -277,7 +276,7 @@ int main(void) {
                    case 3:
                        if (taken3 == false)
                        {
-                           this->location = space3;
+                           tab[currentFruit].setLocation(space3);
                            taken3 = true;
                        }
                        else
@@ -286,7 +285,7 @@ int main(void) {
                    case 4:
                        if (taken4 == false)
                        {
-                           this->location = space4;
+                           tab[currentFruit].setLocation(space4);
                            taken4 = true;
                        }
                        else
@@ -295,7 +294,7 @@ int main(void) {
                    case 5:
                        if (taken5 == false)
                        {
-                           this->location = space5;
+                           tab[currentFruit].setLocation(space5);
                            taken5 = true;
                        }
                        else
@@ -304,9 +303,13 @@ int main(void) {
                    case 6:
                        if (taken6 == false)
                        {
-                           this->location = space6;
+                           tab[currentFruit].setLocation(space6);
                            taken6 = true;
                        }
+                       else if (taken1 && taken2 && taken3 && taken4 && taken5 && taken6)
+                           continue;
+                       else
+                           placeForFruit = 1;
                        break;
                    }
 
@@ -318,7 +321,7 @@ int main(void) {
         //podnoszenie jabłka----------------------------------------------------------------------------
             bool keyPressedE = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
             
-            for (int j = 0; j < i; j++)
+            for (int j = 0; j < currentFruit; j++)//chyba może być zobaczymy!!!!
             {
                 if (character.getGlobalBounds().intersects(tab[j].getGlobalBounds()))
                 {
@@ -332,7 +335,7 @@ int main(void) {
 
         //kosz
 
-            for(int k = 0; k < i; k++)
+            for(int k = 0; k < currentFruit; k++)
             if (keyPressedE && character.getGlobalBounds().intersects(box.getGlobalBounds()) && appleInHand)
             {
                 appleInHand = false;
@@ -356,6 +359,7 @@ int main(void) {
 
         window.draw(character);
 
+        tab[currentFruit].drawFruit(window);
 
         window.draw(score);
 

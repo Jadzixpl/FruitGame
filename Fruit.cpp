@@ -2,22 +2,6 @@
 #include <iostream>
 using namespace std;
 
-
-sf::Texture jablko;
-auto teksturaJablka = jablko.loadFromFile("apyl.png");
-
-sf::Texture gruszka;
-auto teksturaGruszki = gruszka.loadFromFile("gruszka.png");
-
-sf::Texture banan;
-auto teksturaBanana = banan.loadFromFile("banan.png");
-
-sf::Texture winogrona;
-auto teksturaWinogrona = winogrona.loadFromFile("winogrona.png");
-
-int kindOfFruit = rand() % 4 + 1; //owoce 1-jab³ko 2-gruszka 3- banan 4-winogrono
-int placeForFruit = rand() % 6 + 1; //miejsca
-
 Fruit::Fruit() {
 
 	switch (kindOfFruit)
@@ -124,4 +108,10 @@ Fruit& Fruit::operator=(const Fruit& other)
 	points = other.points;
 
 	return *this;
+}
+
+void Fruit::setLocation(sf::Vector2f newLocation)
+{
+	this->location = newLocation;
+	sprite.setPosition(this->location);
 }
