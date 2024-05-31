@@ -128,15 +128,10 @@ int main(void) {
 
     //niewidzialne ściany----------------------------------------------------------------------------------------
     Wall wall0(sf::Vector2f(58.f, 100.f));
-
     Wall wall1(sf::Vector2f(58.f, 250.f));
-
     Wall wall2(sf::Vector2f(58.f, 400.f));
-    
     Wall wall3(sf::Vector2f(846.f, 100.f));
-    
     Wall wall4(sf::Vector2f(846.f, 250.f));
-
     Wall wall5(sf::Vector2f(846.f, 400.f));
 
 
