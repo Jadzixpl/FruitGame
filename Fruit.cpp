@@ -2,15 +2,9 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
+#include "Global.h"
 
 using namespace std;
-
-extern int kindOfFruit;
-
-extern sf::Texture jablko;
-extern sf::Texture gruszka;
-extern sf::Texture banan;
-extern sf::Texture winogrona;
 
 
 Fruit::Fruit() {
@@ -67,5 +61,5 @@ Fruit& Fruit::operator=(const Fruit& other)
 void Fruit::setLocation(sf::Vector2f newLocation)
 {
 	this->location = newLocation;
-	sprite.setPosition(this->location);
+	sprite.setPosition(newLocation);//tutaj by³o location
 }

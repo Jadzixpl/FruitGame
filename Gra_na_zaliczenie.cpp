@@ -1,4 +1,4 @@
-﻿include <SFML/Graphics.hpp> 
+﻿#include <SFML/Graphics.hpp> 
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include <iostream>
@@ -10,7 +10,7 @@
 
 #include "Fruit.h"
 #include "Wall.h"
-
+#include "Global.h"
 //to do-------------:(
 //pudełko
 //kosiarka
@@ -23,23 +23,13 @@
 using namespace std;
 
 
-extern sf::Vector2f space1(155.f, 164.f), space2(155.f, 314.f), space3(155.f, 464.f), space4(814.f, 164.f), space5(814.f, 314.f), space6(814.f, 464.f);
-extern bool taken1 = false, taken2 = false, taken3 = false, taken4 = false, taken5 = false, taken6 = false;
+sf::Vector2f space1(155.f, 164.f), space2(155.f, 314.f), space3(155.f, 464.f), space4(814.f, 164.f), space5(814.f, 314.f), space6(814.f, 464.f);
+bool taken1 = false, taken2 = false, taken3 = false, taken4 = false, taken5 = false, taken6 = false;
 
-sf::Texture jablko;
-auto teksturaJablka = jablko.loadFromFile("apyl.png");
+sf::Texture jablko, gruszka, banan, winogrona;
 
-sf::Texture gruszka;
-auto teksturaGruszki = gruszka.loadFromFile("gruszka.png");
-
-sf::Texture banan;
-auto teksturaBanana = banan.loadFromFile("banan.png");
-
-sf::Texture winogrona;
-auto teksturaWinogrona = winogrona.loadFromFile("winogrona.png");
-
-extern int kindOfFruit = rand() % 4 + 1; //owoce
-extern int placeForFruit = rand() % 6 + 1; //miejsca
+int kindOfFruit = rand() % 4 + 1; //owoce
+int placeForFruit = rand() % 6 + 1; //miejsca
 
 //podstawowe zmienne
 bool gameOver = true;
@@ -55,9 +45,9 @@ int main(void) {
 
     window.setMouseCursorVisible(false);
 
-    //wczytywanie tekstur
+    //wczytywanie tekstur----------------------------------------------------------------------
     sf::Texture postac;
-    postac.loadFromFile("bitmapa.png");
+    postac.loadFromFile("farmer_przod.png");
     sf::Texture drzewo;
     drzewo.loadFromFile("drzewo.png");
     sf::Texture trawa;
@@ -69,6 +59,11 @@ int main(void) {
     sf::Texture kosiarka;
 
     sf::Texture pajak;
+
+    jablko.loadFromFile("apyl.png");
+    gruszka.loadFromFile("gruszka.png");
+    banan.loadFromFile("banan.png");
+    winogrona.loadFromFile("winogrona.png");
 
     //postać
     sf::Sprite character;
@@ -111,7 +106,7 @@ int main(void) {
     grass.setTexture(trawa);
     grass.setPosition(0.f, 0.f);
 
-    //wczytanie scoru
+    //wczytanie scoru------------------------------------------------------------------------------------------
     sf::Font font;
     if (!font.loadFromFile("Jaro-Regular-VariableFont_opsz.ttf")) 
     {
@@ -179,78 +174,80 @@ int main(void) {
         
 
         //kolizje (osobne niewidzialne bloki)
-        if (character.getGlobalBounds().intersects(wall0.getGlobalBounds()) )//ściana 0
-        {
-            if (character.getGlobalBounds().left < wall0.getPosition().x)
-                character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-            else if (character.getGlobalBounds().left > wall0.getPosition().x)
-                character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
+        for (auto& wall : { wall0, wall1, wall2, wall3, wall4, wall5 }) {
+            if (character.getGlobalBounds().intersects(wall.getGlobalBounds()))//ściana 0
+            {
+                if (character.getGlobalBounds().left < wall.getPosition().x)
+                    character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
+                else if (character.getGlobalBounds().left > wall.getPosition().x)
+                    character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
 
-            if(character.getGlobalBounds().top < wall0.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-            else if (character.getGlobalBounds().top > wall0.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
+                if (character.getGlobalBounds().top < wall.getPosition().y)
+                    character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
+                else if (character.getGlobalBounds().top > wall.getPosition().y)
+                    character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
+            }
         }
-        if (character.getGlobalBounds().intersects(wall1.getGlobalBounds()))//ściana 1
-        {
-            if (character.getGlobalBounds().left < wall1.getPosition().x)
-                character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-            else if (character.getGlobalBounds().left > wall1.getPosition().x)
-                character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
+        //if (character.getGlobalBounds().intersects(wall1.getGlobalBounds()))//ściana 1
+        //{
+        //    if (character.getGlobalBounds().left < wall1.getPosition().x)
+        //        character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
+        //    else if (character.getGlobalBounds().left > wall1.getPosition().x)
+        //        character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
 
-            if (character.getGlobalBounds().top < wall1.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-            else if (character.getGlobalBounds().top > wall1.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
-        }
-        if (character.getGlobalBounds().intersects(wall2.getGlobalBounds()))//śćiana 2
-        {
-            if (character.getGlobalBounds().left < wall2.getPosition().x)
-                character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-            else if (character.getGlobalBounds().left > wall2.getPosition().x)
-                character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
+        //    if (character.getGlobalBounds().top < wall1.getPosition().y)
+        //        character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
+        //    else if (character.getGlobalBounds().top > wall1.getPosition().y)
+        //        character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
+        //}
+        //if (character.getGlobalBounds().intersects(wall2.getGlobalBounds()))//śćiana 2
+        //{
+        //    if (character.getGlobalBounds().left < wall2.getPosition().x)
+        //        character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
+        //    else if (character.getGlobalBounds().left > wall2.getPosition().x)
+        //        character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
 
-            if (character.getGlobalBounds().top < wall2.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-            else if (character.getGlobalBounds().top > wall2.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
-        }
-        if (character.getGlobalBounds().intersects(wall3.getGlobalBounds()))//ściana 3
-        {
-            if (character.getGlobalBounds().left < wall3.getPosition().x)
-                character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-            else if (character.getGlobalBounds().left > wall3.getPosition().x)
-                character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
+        //    if (character.getGlobalBounds().top < wall2.getPosition().y)
+        //        character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
+        //    else if (character.getGlobalBounds().top > wall2.getPosition().y)
+        //        character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
+        //}
+        //if (character.getGlobalBounds().intersects(wall3.getGlobalBounds()))//ściana 3
+        //{
+        //    if (character.getGlobalBounds().left < wall3.getPosition().x)
+        //        character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
+        //    else if (character.getGlobalBounds().left > wall3.getPosition().x)
+        //        character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
 
-            if (character.getGlobalBounds().top < wall3.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-            else if (character.getGlobalBounds().top > wall3.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
-        }
-        if (character.getGlobalBounds().intersects(wall4.getGlobalBounds()))//ściana 4
-        {
-            if (character.getGlobalBounds().left < wall4.getPosition().x)
-                character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-            else if (character.getGlobalBounds().left > wall4.getPosition().x)
-                character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
+        //    if (character.getGlobalBounds().top < wall3.getPosition().y)
+        //        character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
+        //    else if (character.getGlobalBounds().top > wall3.getPosition().y)
+        //        character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
+        //}
+        //if (character.getGlobalBounds().intersects(wall4.getGlobalBounds()))//ściana 4
+        //{
+        //    if (character.getGlobalBounds().left < wall4.getPosition().x)
+        //        character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
+        //    else if (character.getGlobalBounds().left > wall4.getPosition().x)
+        //        character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
 
-            if (character.getGlobalBounds().top < wall4.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-            else if (character.getGlobalBounds().top > wall4.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
-        }
-        if (character.getGlobalBounds().intersects(wall5.getGlobalBounds()))//ściana 5
-        {
-            if (character.getGlobalBounds().left < wall5.getPosition().x)
-                character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-            else if (character.getGlobalBounds().left > wall5.getPosition().x)
-                character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
+        //    if (character.getGlobalBounds().top < wall4.getPosition().y)
+        //        character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
+        //    else if (character.getGlobalBounds().top > wall4.getPosition().y)
+        //        character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
+        //}
+        //if (character.getGlobalBounds().intersects(wall5.getGlobalBounds()))//ściana 5
+        //{
+        //    if (character.getGlobalBounds().left < wall5.getPosition().x)
+        //        character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
+        //    else if (character.getGlobalBounds().left > wall5.getPosition().x)
+        //        character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
 
-            if (character.getGlobalBounds().top < wall5.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-            else if (character.getGlobalBounds().top > wall5.getPosition().y)
-                character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
-        }
+        //    if (character.getGlobalBounds().top < wall5.getPosition().y)
+        //        character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
+        //    else if (character.getGlobalBounds().top > wall5.getPosition().y)
+        //        character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
+        //}
         
         
         //render owoców-------------------------------------------------------------------------------
@@ -326,7 +323,7 @@ int main(void) {
                            placeForFruit = 1;
                        break;
                    }
-
+                   currentFruit++;
                    clock.restart();
                }
             }
@@ -343,6 +340,7 @@ int main(void) {
                     {
                         appleInHand = true;
                         tab[j].setPosition(1000.f, 1000.f);
+                        cout << "Podniesiono jablko" << endl;
                     }
                 }
             }
@@ -373,16 +371,17 @@ int main(void) {
 
         window.draw(character);
 
-        tab[currentFruit].drawFruit(window);
+        for (int j = 0; j < currentFruit; j++)
+        {
+            tab[j].drawFruit(window);
+        }
 
+        score.setString("SCORE: " + std::to_string(totalScore));
         window.draw(score);
 
-        window.draw(wall0.setShape());
-        window.draw(wall1.setShape());
-        window.draw(wall2.setShape());
-        window.draw(wall3.setShape());
-        window.draw(wall4.setShape());
-        window.draw(wall5.setShape());
+        for (auto& wall : { wall0, wall1, wall2, wall3, wall4, wall5 }) {
+            window.draw(wall.setShape());
+        }
 
         window.display();
     }
