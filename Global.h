@@ -17,5 +17,5 @@ extern int placeForFruit; //miejsca
 
 extern bool gameOver;
 extern long int totalScore;
-extern Fruit* tab;
+extern Fruit tab[50];
 extern int currentFruit;

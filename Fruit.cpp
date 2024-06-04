@@ -12,22 +12,18 @@ Fruit::Fruit() {
 	switch (kindOfFruit)
 	{
 	case 1:
-		this->name = "apple";
 		this->texture = jablko;
 		this->points = 30;
 		break;
 	case 2:
-		this->name = "pear";
 		this->texture = gruszka;
 		this->points = 35;
 		break;
 	case 3:
-		this->name = "banana";
 		this->texture = banan;
 		this->points = 40;
 		break;
 	case 4:
-		this->name = "grapes";
 		this->texture = winogrona;
 		this->points = 50;
 		break;
@@ -49,7 +45,6 @@ int Fruit::getPoints()
 
 Fruit& Fruit::operator=(const Fruit& other)
 {
-	name = other.name;
 	texture = other.texture;
 	location = other.location;
 	sprite = other.sprite;
@@ -63,3 +58,14 @@ void Fruit::setLocation(sf::Vector2f newLocation)
 	this->location = newLocation;
 	sprite.setPosition(newLocation);//tutaj by³o location
 }
+
+sf::Sprite& Fruit::getSprite()
+{
+	return sprite;
+}
+
+Fruit& Fruit::operator[](int zwrot)
+{
+	return this[zwrot];
+}
+

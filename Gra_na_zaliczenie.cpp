@@ -35,7 +35,7 @@ int placeForFruit = rand() % 6 + 1; //miejsca
 bool gameOver = true;
 long int totalScore = 0;
 
-Fruit* tab = new Fruit[50]; //tablica do przechowywania owoców
+Fruit tab[50]; //tablica do przechowywania owoców 
 
 int currentFruit = 0;
 
@@ -132,6 +132,7 @@ int main(void) {
     for (int i = 0; i < 50; i++) //losowanie owoców do tablicy --------------------------------------------------
     {
         tab[i] = Fruit();
+        cout << "Nowy owoc w tablicy" << endl;
     }
     
     while (window.isOpen()) {
@@ -177,6 +178,8 @@ int main(void) {
         for (auto& wall : { wall0, wall1, wall2, wall3, wall4, wall5 }) {
             if (character.getGlobalBounds().intersects(wall.getGlobalBounds()))//ściana 0
             {
+                cout << "Kolizja" << endl;
+
                 if (character.getGlobalBounds().left < wall.getPosition().x)
                     character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
                 else if (character.getGlobalBounds().left > wall.getPosition().x)
@@ -271,6 +274,7 @@ int main(void) {
                        {
                            tab[currentFruit].setLocation(space1);
                            taken1 = true;
+                           cout << "owoc" << endl;//-------------------------
                        }
                        else
                            placeForFruit++;
@@ -280,6 +284,7 @@ int main(void) {
                        {
                            tab[currentFruit].setLocation(space2);
                            taken2 = true;
+                           cout << "owoc" << endl;//-------------------------
                        }
                        else
                            placeForFruit++;
@@ -289,6 +294,7 @@ int main(void) {
                        {
                            tab[currentFruit].setLocation(space3);
                            taken3 = true;
+                           cout << "owoc" << endl;//-------------------------
                        }
                        else
                            placeForFruit++;
@@ -298,6 +304,7 @@ int main(void) {
                        {
                            tab[currentFruit].setLocation(space4);
                            taken4 = true;
+                           cout << "owoc" << endl;//-------------------------
                        }
                        else
                            placeForFruit++;
@@ -307,6 +314,7 @@ int main(void) {
                        {
                            tab[currentFruit].setLocation(space5);
                            taken5 = true;
+                           cout << "owoc" << endl;//-------------------------
                        }
                        else
                            placeForFruit++;
@@ -316,6 +324,7 @@ int main(void) {
                        {
                            tab[currentFruit].setLocation(space6);
                            taken6 = true;
+                           cout << "owoc" << endl;//-------------------------
                        }
                        else if (taken1 && taken2 && taken3 && taken4 && taken5 && taken6)
                            continue;
@@ -352,6 +361,7 @@ int main(void) {
             {
                 appleInHand = false;
                 totalScore += tab[k].getPoints(); //chyba git?
+                cout << "Wrzucono jablko" << endl;
             }
         
 
@@ -366,14 +376,12 @@ int main(void) {
         window.draw(tree5);
         window.draw(tree6);
 
-
         window.draw(box);
 
         window.draw(character);
 
-        for (int j = 0; j < currentFruit; j++)
-        {
-            tab[j].drawFruit(window);
+        for (int i = 0; i < 50; i++) {
+            window.draw(tab[i].getSprite());
         }
 
         score.setString("SCORE: " + std::to_string(totalScore));
@@ -386,7 +394,6 @@ int main(void) {
         window.display();
     }
 
-    delete[] tab;
 
     std::cout << "Dzienkuje za zagranie :)" << endl;
 

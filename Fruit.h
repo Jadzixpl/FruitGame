@@ -11,7 +11,6 @@ using namespace std;
 class Fruit : public sf::Sprite
 {
 protected:
-	string name;
 	sf::Texture texture;
 	sf::Vector2f location;
 	sf::Sprite sprite;
@@ -22,6 +21,8 @@ public:
 	int getPoints();
 	Fruit& operator=(const Fruit& other);
 	void setLocation(sf::Vector2f newLocation);
+	sf::Sprite& getSprite();
+	Fruit& operator[](int zwrot);
 };
 
 
