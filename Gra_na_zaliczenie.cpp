@@ -18,26 +18,35 @@
 //może dzwięki jak zdąrze
 //timer
 //wyświetlanie punktów
-//tablice sprawdzać po wskaźnikach????
 
 using namespace std;
 
-
-sf::Vector2f space1(155.f, 164.f), space2(155.f, 314.f), space3(155.f, 464.f), space4(814.f, 164.f), space5(814.f, 314.f), space6(814.f, 464.f);
-bool taken1 = false, taken2 = false, taken3 = false, taken4 = false, taken5 = false, taken6 = false;
+bool gameOver = false;
+long int totalScore = 0;
 
 sf::Texture jablko, gruszka, banan, winogrona;
 
-int kindOfFruit = rand() % 4 + 1; //owoce
-int placeForFruit = rand() % 6 + 1; //miejsca
+std::vector<Fruit> tab; //wektor do przechowywania owoców 
 
-//podstawowe zmienne
-bool gameOver = true;
-long int totalScore = 0;
-
-Fruit tab[50]; //tablica do przechowywania owoców 
+std::vector<int> availableTrees;
 
 int currentFruit = 0;
+
+int pointsInHand = 0;
+
+const float FRUIT_RANGE_X = 30.f;
+const float FRUIT_RANGE_Y = 30.f;
+
+sf::Vector2f treePositions[] = {
+    sf::Vector2f(58.f, 100.f),
+    sf::Vector2f(58.f, 250.f),
+    sf::Vector2f(58.f, 400.f),
+    sf::Vector2f(846.f, 100.f),
+    sf::Vector2f(846.f, 250.f),
+    sf::Vector2f(846.f, 400.f)
+};
+
+bool takenTrees[] = { false, false, false, false, false, false };
 
 
 int main(void) {
@@ -53,9 +62,7 @@ int main(void) {
     sf::Texture trawa;
     trawa.loadFromFile("trawakurwa.png"); 
     sf::Texture pudelko;
-
-    sf::Texture kosz;
-
+    pudelko.loadFromFile("pudlo.png");
     sf::Texture kosiarka;
 
     sf::Texture pajak;
@@ -65,6 +72,10 @@ int main(void) {
     banan.loadFromFile("banan.png");
     winogrona.loadFromFile("winogrona.png");
 
+    sf::Sprite owoclos;
+    owoclos.setTexture(gruszka);
+    owoclos.setPosition(300, 300);
+
     //postać
     sf::Sprite character;
     character.setTexture(postac);
@@ -72,34 +83,18 @@ int main(void) {
     bool appleInHand = false;
 
     //drzewa
-    sf::Sprite tree1;
-    tree1.setTexture(drzewo);
-    tree1.setPosition(58.f,100.f);
-
-    sf::Sprite tree2;
-    tree2.setTexture(drzewo);
-    tree2.setPosition(58.f, 250.f);
-
-    sf::Sprite tree3;
-    tree3.setTexture(drzewo);
-    tree3.setPosition(58.f, 400.f);
-    
-    sf::Sprite tree4;
-    tree4.setTexture(drzewo);
-    tree4.setPosition(846.f, 100.f);
-
-    sf::Sprite tree5;
-    tree5.setTexture(drzewo);
-    tree5.setPosition(846.f, 250.f);
-
-    sf::Sprite tree6;
-    tree6.setTexture(drzewo);
-    tree6.setPosition(846.f, 400.f);
+    sf::Sprite tree1, tree2, tree3, tree4, tree5, tree6;
+    tree1.setTexture(drzewo); tree1.setPosition(58.f, 100.f);
+    tree2.setTexture(drzewo); tree2.setPosition(58.f, 250.f);
+    tree3.setTexture(drzewo); tree3.setPosition(58.f, 400.f);
+    tree4.setTexture(drzewo); tree4.setPosition(846.f, 100.f);
+    tree5.setTexture(drzewo); tree5.setPosition(846.f, 250.f);
+    tree6.setTexture(drzewo); tree6.setPosition(846.f, 400.f);
 
     //pudełko
-    sf::RectangleShape box(sf::Vector2f(32.f, 32.f));
-    box.setFillColor(sf::Color::Magenta);
-    box.setPosition(500.f, 586.f);
+    sf::Sprite box;
+    box.setTexture(pudelko);
+    box.setPosition(500.f, 576.f);
     
     //trawa
     sf::Sprite grass;
@@ -110,15 +105,22 @@ int main(void) {
     sf::Font font;
     if (!font.loadFromFile("Jaro-Regular-VariableFont_opsz.ttf")) 
     {
-        cout << "Błąd ładowania czcionki!" << endl;
+        std::cout << "Błąd ładowania czcionki!" << endl;
         return 1;
     }
     sf::Text score;
     score.setFont(font);
-    score.setString("SCORE : ");
     score.setFillColor(sf::Color::White);
     score.setCharacterSize(40);
     score.setPosition(10.f ,10.f);
+
+    //timer -----------------------------------------------------------------------------------------------
+    sf::Text timer;
+    timer.setFont(font);
+    timer.setFillColor(sf::Color::Black);
+    timer.setCharacterSize(40);
+    timer.setPosition(750.f, 10.f);
+
 
     //niewidzialne ściany----------------------------------------------------------------------------------------
     Wall wall0(sf::Vector2f(58.f, 100.f));
@@ -129,11 +131,14 @@ int main(void) {
     Wall wall5(sf::Vector2f(846.f, 400.f));
 
 
-    for (int i = 0; i < 50; i++) //losowanie owoców do tablicy --------------------------------------------------
-    {
-        tab[i] = Fruit();
-        cout << "Nowy owoc w tablicy" << endl;
+    tab.reserve(50);//zarezerwowane żeby nie alokować pamięci :D
+    for (int i = 0; i < 50; i++) {
+        tab.push_back(Fruit());
+        std::cout << "Nowy owoc w tablicy" << endl;
     }
+
+    sf::Clock fruitClock; //zegary
+    sf::Clock gameTime;
     
     while (window.isOpen()) {
         sf::Event event;
@@ -175,22 +180,22 @@ int main(void) {
         
 
         //kolizje (osobne niewidzialne bloki)
-        for (auto& wall : { wall0, wall1, wall2, wall3, wall4, wall5 }) {
-            if (character.getGlobalBounds().intersects(wall.getGlobalBounds()))//ściana 0
-            {
-                cout << "Kolizja" << endl;
+        //for (auto& wall : { wall0, wall1, wall2, wall3, wall4, wall5 }) {
+        //    if (character.getGlobalBounds().intersects(wall.getGlobalBounds()))//ściana 0
+        //    {
+        //        cout << "Kolizja" << endl;
 
-                if (character.getGlobalBounds().left < wall.getPosition().x)
-                    character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-                else if (character.getGlobalBounds().left > wall.getPosition().x)
-                    character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
+        //        if (character.getGlobalBounds().left < wall.getPosition().x)
+        //            character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
+        //        else if (character.getGlobalBounds().left > wall.getPosition().x)
+        //            character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
 
-                if (character.getGlobalBounds().top < wall.getPosition().y)
-                    character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-                else if (character.getGlobalBounds().top > wall.getPosition().y)
-                    character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
-            }
-        }
+        //        if (character.getGlobalBounds().top < wall.getPosition().y)
+        //            character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
+        //        else if (character.getGlobalBounds().top > wall.getPosition().y)
+        //            character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
+        //    }
+        //}
         //if (character.getGlobalBounds().intersects(wall1.getGlobalBounds()))//ściana 1
         //{
         //    if (character.getGlobalBounds().left < wall1.getPosition().x)
@@ -253,144 +258,110 @@ int main(void) {
         //}
         
         
-        //render owoców-------------------------------------------------------------------------------
         srand(static_cast<unsigned>(time(0)));
-        
 
-        sf::Clock clock;
-        
-           while (!gameOver)
-            {
-               sf::Time elapsed = clock.getElapsedTime();
-               
-
-               if (elapsed.asSeconds() > 5.0f)
-               {
-
-                   switch (placeForFruit)
-                   {
-                   case 1:
-                       if (taken1 == false)
-                       {
-                           tab[currentFruit].setLocation(space1);
-                           taken1 = true;
-                           cout << "owoc" << endl;//-------------------------
-                       }
-                       else
-                           placeForFruit++;
-                       break;
-                   case 2:
-                       if (taken2 == false)
-                       {
-                           tab[currentFruit].setLocation(space2);
-                           taken2 = true;
-                           cout << "owoc" << endl;//-------------------------
-                       }
-                       else
-                           placeForFruit++;
-                       break;
-                   case 3:
-                       if (taken3 == false)
-                       {
-                           tab[currentFruit].setLocation(space3);
-                           taken3 = true;
-                           cout << "owoc" << endl;//-------------------------
-                       }
-                       else
-                           placeForFruit++;
-                       break;
-                   case 4:
-                       if (taken4 == false)
-                       {
-                           tab[currentFruit].setLocation(space4);
-                           taken4 = true;
-                           cout << "owoc" << endl;//-------------------------
-                       }
-                       else
-                           placeForFruit++;
-                       break;
-                   case 5:
-                       if (taken5 == false)
-                       {
-                           tab[currentFruit].setLocation(space5);
-                           taken5 = true;
-                           cout << "owoc" << endl;//-------------------------
-                       }
-                       else
-                           placeForFruit++;
-                       break;
-                   case 6:
-                       if (taken6 == false)
-                       {
-                           tab[currentFruit].setLocation(space6);
-                           taken6 = true;
-                           cout << "owoc" << endl;//-------------------------
-                       }
-                       else if (taken1 && taken2 && taken3 && taken4 && taken5 && taken6)
-                           continue;
-                       else
-                           placeForFruit = 1;
-                       break;
-                   }
-                   currentFruit++;
-                   clock.restart();
-               }
-            }
-
-
-        //podnoszenie jabłka----------------------------------------------------------------------------
-            bool keyPressedE = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
-            
-            for (int j = 0; j < currentFruit; j++)//chyba może być zobaczymy!!!!
-            {
-                if (character.getGlobalBounds().intersects(tab[j].getGlobalBounds()))
-                {
-                    if (keyPressedE && !appleInHand)
-                    {
-                        appleInHand = true;
-                        tab[j].setPosition(1000.f, 1000.f);
-                        cout << "Podniesiono jablko" << endl;
-                    }
+        // Losowanie nowego owocu co 5 sekund-----------------------------------------------------------------------
+        if (fruitClock.getElapsedTime().asSeconds() > 5.0f && !gameOver && gameTime.getElapsedTime().asSeconds() < 61) {
+            for (int i = 0; i < 6; ++i) {
+                if (!takenTrees[i]) {
+                    availableTrees.push_back(i);
                 }
             }
 
-        //kosz
+            if (!availableTrees.empty() && currentFruit < tab.size()) {
+                int randomTreeIndex = rand() % availableTrees.size();
+                int treeIndex = availableTrees[randomTreeIndex];
 
-            for(int k = 0; k < currentFruit; k++)
-            if (keyPressedE && character.getGlobalBounds().intersects(box.getGlobalBounds()) && appleInHand)
-            {
-                appleInHand = false;
-                totalScore += tab[k].getPoints(); //chyba git?
-                cout << "Wrzucono jablko" << endl;
+                float treeX = treePositions[treeIndex].x;
+                float treeY = treePositions[treeIndex].y;
+
+                float fruitX = treeX + (rand() % (int)(2 * FRUIT_RANGE_X)) - FRUIT_RANGE_X;//Generowanie wokół drzewa
+                float fruitY = treeY + (rand() % (int)(2 * FRUIT_RANGE_Y)) - FRUIT_RANGE_Y;
+
+                switch (rand() % 4 + 1)
+                {
+                case 1:
+                    tab[currentFruit].setPoints(30);
+                    tab[currentFruit].setTexture(jablko);
+                    break;
+                case 2:
+                    tab[currentFruit].setPoints(35);
+                    tab[currentFruit].setTexture(gruszka);
+                    break;
+                case 3:
+                    tab[currentFruit].setPoints(40);
+                    tab[currentFruit].setTexture(banan);
+                    break;
+                case 4:
+                    tab[currentFruit].setPoints(50);
+                    tab[currentFruit].setTexture(winogrona);
+                    break;
+                }
+
+                tab[currentFruit].setLocation(sf::Vector2f(fruitX, fruitY));
+                takenTrees[treeIndex] = true;
+
+                tab[currentFruit].assignTree(treeIndex);
+
+                std::cout << "Owoc wygenerowany na pozycji: " << fruitX << ", " << fruitY << endl;
+
+                ++currentFruit;
             }
-        
 
+            fruitClock.restart();
+        }
+
+        // Podnoszenie owocu-------------------------------------------------------------------------------
+        bool keyPressedE = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
+
+        for (int j = 0; j < currentFruit; j++) {
+            if (character.getGlobalBounds().intersects(tab[j].getSprite().getGlobalBounds())) {
+                if (keyPressedE && !appleInHand) {
+                    appleInHand = true;
+                    pointsInHand = tab[j].getPoints();
+                    tab[j].setLocation(sf::Vector2f(1000.f, 1000.f));
+                    std::cout << "Podniesiono owoc" << endl;
+                    takenTrees[tab[j].getTree()] = false;
+                }
+            }
+        }
+
+        //kosz----------------------------------------------------------------------------------------------
+        if (keyPressedE && character.getGlobalBounds().intersects(box.getGlobalBounds()))
+        {
+            appleInHand = false;
+            totalScore = totalScore + pointsInHand;
+            pointsInHand = 0;
+        }
+
+        //koniec gry -----------------------------------------------------------------------------------
+        if (gameTime.getElapsedTime().asSeconds() > 60)
+        {
+            gameOver = true;
+            return 1;
+        }
+
+        //wyświetlanie-------------------------------------------------------------------------------
         window.clear();
-
         window.draw(grass);
-
         window.draw(tree1);
         window.draw(tree2);
         window.draw(tree3);
         window.draw(tree4);
         window.draw(tree5);
         window.draw(tree6);
-
         window.draw(box);
-
         window.draw(character);
 
-        for (int i = 0; i < 50; i++) {
-            window.draw(tab[i].getSprite());
+        window.draw(owoclos);
+
+        for (auto& fruit : tab) {
+            fruit.drawFruit(window);
         }
 
-        score.setString("SCORE: " + std::to_string(totalScore));
         window.draw(score);
-
-        for (auto& wall : { wall0, wall1, wall2, wall3, wall4, wall5 }) {
-            window.draw(wall.setShape());
-        }
-
+        timer.setString("0:" + to_string(gameTime.getElapsedTime().asSeconds()));
+        score.setString("SCORE: " + std::to_string(totalScore));
         window.display();
     }
 
