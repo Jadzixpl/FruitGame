@@ -24,7 +24,7 @@ using namespace std;
 bool gameOver = false;
 long int totalScore = 0;
 
-sf::Texture jablko, gruszka, banan, winogrona;
+sf::Texture jablko, gruszka, banan, winogrona; 
 
 std::vector<Fruit> tab; //wektor do przechowywania owoców 
 
@@ -71,10 +71,6 @@ int main(void) {
     gruszka.loadFromFile("gruszka.png");
     banan.loadFromFile("banan.png");
     winogrona.loadFromFile("winogrona.png");
-
-    sf::Sprite owoclos;
-    owoclos.setTexture(gruszka);
-    owoclos.setPosition(300, 300);
 
     //postać
     sf::Sprite character;
@@ -261,7 +257,7 @@ int main(void) {
         srand(static_cast<unsigned>(time(0)));
 
         // Losowanie nowego owocu co 5 sekund-----------------------------------------------------------------------
-        if (fruitClock.getElapsedTime().asSeconds() > 5.0f && !gameOver && gameTime.getElapsedTime().asSeconds() < 61) {
+        if (fruitClock.getElapsedTime().asSeconds() > 5.0f && !gameOver && gameTime.getElapsedTime().asSeconds() <= 61) {
             for (int i = 0; i < 6; ++i) {
                 if (!takenTrees[i]) {
                     availableTrees.push_back(i);
@@ -295,6 +291,8 @@ int main(void) {
                 case 4:
                     tab[currentFruit].setPoints(50);
                     tab[currentFruit].setTexture(winogrona);
+                    break;
+                default:
                     break;
                 }
 
@@ -330,7 +328,7 @@ int main(void) {
         if (keyPressedE && character.getGlobalBounds().intersects(box.getGlobalBounds()))
         {
             appleInHand = false;
-            totalScore = totalScore + pointsInHand;
+            totalScore +=pointsInHand;
             pointsInHand = 0;
         }
 
@@ -353,15 +351,14 @@ int main(void) {
         window.draw(box);
         window.draw(character);
 
-        window.draw(owoclos);
-
         for (auto& fruit : tab) {
             fruit.drawFruit(window);
         }
 
-        window.draw(score);
-        timer.setString("0:" + to_string(gameTime.getElapsedTime().asSeconds()));
         score.setString("SCORE: " + std::to_string(totalScore));
+        window.draw(score);
+        timer.setString("TIME: " + std::to_string(static_cast<int>(60 - gameTime.getElapsedTime().asSeconds())));
+        window.draw(timer);
         window.display();
     }
 
