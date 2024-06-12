@@ -18,7 +18,7 @@
 //może dzwięki jak zdąrze
 //timer
 //wyświetlanie punktów
-/do maina
+
 using namespace std;
 
 
