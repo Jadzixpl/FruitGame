@@ -18,8 +18,7 @@
 //może dzwięki jak zdąrze
 //timer
 //wyświetlanie punktów
-//tablice sprawdzać po wskaźnikach????
-
+/do maina
 using namespace std;
 
 
