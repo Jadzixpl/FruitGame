@@ -61,6 +61,16 @@ int main(void) {
     sf::Texture postac_lewo;
     postac_lewo.loadFromFile("farmer_lbok.png");
 
+    sf::Texture postac_p_owoc;
+    postac_p_owoc.loadFromFile("farmer_przod_owoc.png");
+    sf::Texture postac_t_owoc;
+    postac_t_owoc.loadFromFile("farmer_tyl_owoc.png");
+    sf::Texture postac_prawo_owoc;
+    postac_prawo_owoc.loadFromFile("farmer_pbok_owoc.png");
+    sf::Texture postac_lewo_owoc;
+    postac_lewo_owoc.loadFromFile("farmer_lbok_owoc.png");
+
+
     sf::Texture drzewo;
     drzewo.loadFromFile("drzewo.png");
     sf::Texture trawa;
@@ -156,6 +166,8 @@ int main(void) {
        
     }
 
+    float characterSpeed = 0.15;
+
     sf::Clock fruitClock; //zegary
     sf::Clock gameTime;
     
@@ -166,26 +178,43 @@ int main(void) {
                 window.close();
         }
 
+
         // poruszanie po ekranie postaci-------------------------------------------------------------------------
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            character.setTexture(postac_prawo);
-            character.move(0.1f, 0.f);
+            if (appleInHand)
+                character.setTexture(postac_prawo_owoc);
+            else
+                character.setTexture(postac_prawo);
+
+            character.move(characterSpeed, 0);
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
-            character.setTexture(postac_lewo);
-            character.move(-0.1f, 0.f);
+            if (appleInHand)
+                character.setTexture(postac_lewo_owoc);
+            else
+                character.setTexture(postac_lewo);
+
+            character.move(-characterSpeed, 0);
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
-            character.setTexture(postac_t);
-            character.move(0.f, -0.1f);
+            if (appleInHand)
+                character.setTexture(postac_t_owoc);
+            else
+                character.setTexture(postac_t);
+            
+            character.move(0, -characterSpeed);
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
-            character.setTexture(postac_p);
-            character.move(0.f, 0.1f);
+            if (appleInHand)
+                character.setTexture(postac_p_owoc);
+            else
+                character.setTexture(postac_p);
+
+            character.move(0, characterSpeed);
         }
 
         //kolizja ścian postaci ---------------------------------------------------------------------------------------
