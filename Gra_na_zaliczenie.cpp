@@ -12,12 +12,9 @@
 #include "Wall.h"
 #include "Global.h"
 //to do-------------:(
-//pudełko
 //kosiarka
 //pająk
-//może dzwięki jak zdąrze
-//timer
-//wyświetlanie punktów
+//naprawić ściany
 
 using namespace std;
 
@@ -55,8 +52,15 @@ int main(void) {
     window.setMouseCursorVisible(false);
 
     //wczytywanie tekstur----------------------------------------------------------------------
-    sf::Texture postac;
-    postac.loadFromFile("farmer_przod.png");
+    sf::Texture postac_p;
+    postac_p.loadFromFile("farmer_przod.png");
+    sf::Texture postac_t;
+    postac_t.loadFromFile("farmer_tyl.png");
+    sf::Texture postac_prawo;
+    postac_prawo.loadFromFile("farmer_pbok.png");
+    sf::Texture postac_lewo;
+    postac_lewo.loadFromFile("farmer_lbok.png");
+
     sf::Texture drzewo;
     drzewo.loadFromFile("drzewo.png");
     sf::Texture trawa;
@@ -72,9 +76,11 @@ int main(void) {
     banan.loadFromFile("banan.png");
     winogrona.loadFromFile("winogrona.png");
 
+
+
     //postać
     sf::Sprite character;
-    character.setTexture(postac);
+    character.setTexture(postac_p);
     character.setPosition(500, 500);
     bool appleInHand = false;
 
@@ -113,9 +119,9 @@ int main(void) {
     //timer -----------------------------------------------------------------------------------------------
     sf::Text timer;
     timer.setFont(font);
-    timer.setFillColor(sf::Color::Black);
+    timer.setFillColor(sf::Color::White);
     timer.setCharacterSize(40);
-    timer.setPosition(750.f, 10.f);
+    timer.setPosition(800.f, 10.f);
 
 
     //niewidzialne ściany----------------------------------------------------------------------------------------
@@ -129,8 +135,25 @@ int main(void) {
 
     tab.reserve(50);//zarezerwowane żeby nie alokować pamięci :D
     for (int i = 0; i < 50; i++) {
-        tab.push_back(Fruit());
-        std::cout << "Nowy owoc w tablicy" << endl;
+        
+        switch (rand() % 4 + 1)
+        {
+        case 1:
+            tab.push_back(Fruit(&jablko, 30));
+            break;
+        case 2:
+            tab.push_back(Fruit(&gruszka,35));
+            break;
+        case 3:
+            tab.push_back(Fruit(&banan, 40));
+            break;
+        case 4:
+            tab.push_back(Fruit(&winogrona,45));
+            break;
+        default:
+            break;
+        }
+       
     }
 
     sf::Clock fruitClock; //zegary
@@ -146,18 +169,22 @@ int main(void) {
         // poruszanie po ekranie postaci-------------------------------------------------------------------------
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
+            character.setTexture(postac_prawo);
             character.move(0.1f, 0.f);
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
+            character.setTexture(postac_lewo);
             character.move(-0.1f, 0.f);
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
+            character.setTexture(postac_t);
             character.move(0.f, -0.1f);
         }
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
+            character.setTexture(postac_p);
             character.move(0.f, 0.1f);
         }
 
@@ -192,68 +219,7 @@ int main(void) {
         //            character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
         //    }
         //}
-        //if (character.getGlobalBounds().intersects(wall1.getGlobalBounds()))//ściana 1
-        //{
-        //    if (character.getGlobalBounds().left < wall1.getPosition().x)
-        //        character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-        //    else if (character.getGlobalBounds().left > wall1.getPosition().x)
-        //        character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
-
-        //    if (character.getGlobalBounds().top < wall1.getPosition().y)
-        //        character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-        //    else if (character.getGlobalBounds().top > wall1.getPosition().y)
-        //        character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
-        //}
-        //if (character.getGlobalBounds().intersects(wall2.getGlobalBounds()))//śćiana 2
-        //{
-        //    if (character.getGlobalBounds().left < wall2.getPosition().x)
-        //        character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-        //    else if (character.getGlobalBounds().left > wall2.getPosition().x)
-        //        character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
-
-        //    if (character.getGlobalBounds().top < wall2.getPosition().y)
-        //        character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-        //    else if (character.getGlobalBounds().top > wall2.getPosition().y)
-        //        character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
-        //}
-        //if (character.getGlobalBounds().intersects(wall3.getGlobalBounds()))//ściana 3
-        //{
-        //    if (character.getGlobalBounds().left < wall3.getPosition().x)
-        //        character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-        //    else if (character.getGlobalBounds().left > wall3.getPosition().x)
-        //        character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
-
-        //    if (character.getGlobalBounds().top < wall3.getPosition().y)
-        //        character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-        //    else if (character.getGlobalBounds().top > wall3.getPosition().y)
-        //        character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
-        //}
-        //if (character.getGlobalBounds().intersects(wall4.getGlobalBounds()))//ściana 4
-        //{
-        //    if (character.getGlobalBounds().left < wall4.getPosition().x)
-        //        character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-        //    else if (character.getGlobalBounds().left > wall4.getPosition().x)
-        //        character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
-
-        //    if (character.getGlobalBounds().top < wall4.getPosition().y)
-        //        character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-        //    else if (character.getGlobalBounds().top > wall4.getPosition().y)
-        //        character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
-        //}
-        //if (character.getGlobalBounds().intersects(wall5.getGlobalBounds()))//ściana 5
-        //{
-        //    if (character.getGlobalBounds().left < wall5.getPosition().x)
-        //        character.setPosition(character.getPosition().x - 0.1f, character.getPosition().y);
-        //    else if (character.getGlobalBounds().left > wall5.getPosition().x)
-        //        character.setPosition(character.getPosition().x + 0.1f, character.getPosition().y);
-
-        //    if (character.getGlobalBounds().top < wall5.getPosition().y)
-        //        character.setPosition(character.getPosition().x, character.getPosition().y - 0.1f);
-        //    else if (character.getGlobalBounds().top > wall5.getPosition().y)
-        //        character.setPosition(character.getPosition().x, character.getPosition().y + 0.1f);
-        //}
-        
-        
+         
         srand(static_cast<unsigned>(time(0)));
 
         // Losowanie nowego owocu co 5 sekund-----------------------------------------------------------------------
@@ -274,27 +240,6 @@ int main(void) {
                 float fruitX = treeX + (rand() % (int)(2 * FRUIT_RANGE_X)) - FRUIT_RANGE_X;//Generowanie wokół drzewa
                 float fruitY = treeY + (rand() % (int)(2 * FRUIT_RANGE_Y)) - FRUIT_RANGE_Y;
 
-                switch (rand() % 4 + 1)
-                {
-                case 1:
-                    tab[currentFruit].setPoints(30);
-                    tab[currentFruit].setTexture(jablko);
-                    break;
-                case 2:
-                    tab[currentFruit].setPoints(35);
-                    tab[currentFruit].setTexture(gruszka);
-                    break;
-                case 3:
-                    tab[currentFruit].setPoints(40);
-                    tab[currentFruit].setTexture(banan);
-                    break;
-                case 4:
-                    tab[currentFruit].setPoints(50);
-                    tab[currentFruit].setTexture(winogrona);
-                    break;
-                default:
-                    break;
-                }
 
                 tab[currentFruit].setLocation(sf::Vector2f(fruitX, fruitY));
                 takenTrees[treeIndex] = true;

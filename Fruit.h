@@ -19,27 +19,11 @@ protected:
     vector<sf::Vector2f> locations;
 
 public:
-    Fruit() {
-
-        location = sf::Vector2f(-50.f,-50.f);
-        texture.loadFromFile("apyl.png");
-        points = 30;
-        assignedTree = 0;
-
-        sprite.setTexture(texture);
-
-        /*locations.push_back(sf::Vector2f(100, 100));
-        locations.push_back(sf::Vector2f(200, 100));
-        locations.push_back(sf::Vector2f(300, 100));
-        locations.push_back(sf::Vector2f(100, 200));
-        locations.push_back(sf::Vector2f(200, 200));
-        locations.push_back(sf::Vector2f(300, 200));*/
-
-
-        /*srand(static_cast<unsigned int>(time(0)));
-
-
-        setLocation(locations[rand() % 6]);*/
+    Fruit(sf::Texture *tekstura, int punkty) : assignedTree(0), points(0) {
+        location = sf::Vector2f(-500.f, -500.f);
+        texture = *tekstura;
+        points = punkty;
+        sprite.setTexture(*tekstura);
     }
 
     void drawFruit(sf::RenderWindow& window)
@@ -75,7 +59,7 @@ public:
         return this[zwrot];
     }
 
-    void randomizeLocation()
+    void randomizeLocation()//poprawiæ------------------------------------------------------------
     {
         setLocation(locations[rand() % 6]);
     }
@@ -100,8 +84,9 @@ public:
         return points;
     }
 
-    void setTexture(sf::Texture teksturka)
+    void setTextureFruit(const sf::Texture* teksturka)
     {
-        texture = teksturka;
+        texture = *teksturka;
+        sprite.setTexture(*teksturka);
     }
 };
