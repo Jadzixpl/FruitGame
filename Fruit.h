@@ -21,6 +21,7 @@ protected:
 public:
     Fruit(sf::Texture *tekstura, int punkty) : assignedTree(0), points(0) {
         location = sf::Vector2f(-500.f, -500.f);
+        sprite.setPosition(location);
         texture = *tekstura;
         points = punkty;
         sprite.setTexture(*tekstura);
@@ -30,7 +31,6 @@ public:
     {
         window.draw(sprite);
     }
-
 
     Fruit& operator=(const Fruit& other)
     {
@@ -59,10 +59,6 @@ public:
         return this[zwrot];
     }
 
-    void randomizeLocation()//poprawiæ------------------------------------------------------------
-    {
-        setLocation(locations[rand() % 6]);
-    }
 
     void assignTree(int tree)
     {

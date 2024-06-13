@@ -19,6 +19,9 @@
 using namespace std;
 
 bool gameOver = false;
+bool tutorial = true;
+bool startGame = false;
+
 long int totalScore = 0;
 
 sf::Texture jablko, gruszka, banan, winogrona; 
@@ -87,7 +90,6 @@ int main(void) {
     winogrona.loadFromFile("winogrona.png");
 
 
-
     //postać
     sf::Sprite character;
     character.setTexture(postac_p);
@@ -133,14 +135,26 @@ int main(void) {
     timer.setCharacterSize(40);
     timer.setPosition(800.f, 10.f);
 
+    sf::Texture Gametutorial;
+    Gametutorial.loadFromFile("tutorial.png");
+    sf::Sprite tuto;
+    tuto.setTexture(Gametutorial);
+    tuto.setPosition(0.f, 0.f);
+
+    sf::Texture koniecGry;
+    koniecGry.loadFromFile("gameover.png");
+    sf::Sprite over;
+    over.setTexture(koniecGry);
+    over.setPosition(0.f, 0.f);
+
 
     //niewidzialne ściany----------------------------------------------------------------------------------------
-    Wall wall0(sf::Vector2f(58.f, 100.f));
+    /*Wall wall0(sf::Vector2f(58.f, 100.f));
     Wall wall1(sf::Vector2f(58.f, 250.f));
     Wall wall2(sf::Vector2f(58.f, 400.f));
     Wall wall3(sf::Vector2f(846.f, 100.f));
     Wall wall4(sf::Vector2f(846.f, 250.f));
-    Wall wall5(sf::Vector2f(846.f, 400.f));
+    Wall wall5(sf::Vector2f(846.f, 400.f));*/
 
 
     tab.reserve(50);//zarezerwowane żeby nie alokować pamięci :D
@@ -169,6 +183,7 @@ int main(void) {
     float characterSpeed = 0.15;
 
     sf::Clock fruitClock; //zegary
+    
     sf::Clock gameTime;
     
     while (window.isOpen()) {
@@ -283,6 +298,7 @@ int main(void) {
             fruitClock.restart();
         }
 
+        
         // Podnoszenie owocu-------------------------------------------------------------------------------
         bool keyPressedE = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
 
@@ -307,33 +323,60 @@ int main(void) {
         }
 
         //koniec gry -----------------------------------------------------------------------------------
-        if (gameTime.getElapsedTime().asSeconds() > 60)
+        if (startGame && gameTime.getElapsedTime().asSeconds() > 60)
         {
             gameOver = true;
+            startGame = false;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             return 1;
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        {
+            tutorial = false;
+            startGame = true;
+            gameTime.restart();
         }
 
         //wyświetlanie-------------------------------------------------------------------------------
-        window.clear();
-        window.draw(grass);
-        window.draw(tree1);
-        window.draw(tree2);
-        window.draw(tree3);
-        window.draw(tree4);
-        window.draw(tree5);
-        window.draw(tree6);
-        window.draw(box);
-        window.draw(character);
+        if (startGame)
+        {
+            window.clear();
+            window.draw(grass);
+            window.draw(tree1);
+            window.draw(tree2);
+            window.draw(tree3);
+            window.draw(tree4);
+            window.draw(tree5);
+            window.draw(tree6);
+            window.draw(box);
+            window.draw(character);
 
-        for (auto& fruit : tab) {
-            fruit.drawFruit(window);
+            for (auto& fruit : tab) {
+                fruit.drawFruit(window);
+            }
+
+            score.setString("SCORE: " + std::to_string(totalScore));
+            window.draw(score);
+            timer.setString("TIME: " + std::to_string(static_cast<int>(60 - gameTime.getElapsedTime().asSeconds())));
+            window.draw(timer);
+            window.display();
         }
 
-        score.setString("SCORE: " + std::to_string(totalScore));
-        window.draw(score);
-        timer.setString("TIME: " + std::to_string(static_cast<int>(60 - gameTime.getElapsedTime().asSeconds())));
-        window.draw(timer);
-        window.display();
+        if (gameOver)
+        {
+            window.clear();
+            window.draw(over);
+            window.display();
+        }
+
+        if (tutorial)
+        {
+            window.clear();
+            window.draw(tuto);
+            window.display();
+        }
     }
 
 
