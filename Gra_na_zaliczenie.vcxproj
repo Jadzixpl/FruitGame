@@ -157,11 +157,13 @@
   <ItemGroup>
     <ClCompile Include="Fruit.cpp" />
     <ClCompile Include="Gra_na_zaliczenie.cpp" />
+    <ClCompile Include="Lawnmower.cpp" />
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Fruit.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="Lawnmower.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

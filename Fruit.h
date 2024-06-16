@@ -1,5 +1,5 @@
 #pragma once
-#include <SFML/Graphics.hpp> 
+#include <SFML/Graphics.hpp>
 #include <string>
 #include <random>
 #include <ctime>
@@ -16,8 +16,6 @@ protected:
     sf::Sprite sprite;
     int points; // jab³ko-30 gruszka-35 banan-40 winogrona-50
     int assignedTree;
-    vector<sf::Vector2f> locations;
-
 public:
     Fruit(sf::Texture *tekstura, int punkty) : assignedTree(0), points(0) {
         location = sf::Vector2f(-500.f, -500.f);
@@ -38,7 +36,6 @@ public:
         location = other.location;
         sprite = other.sprite;
         points = other.points;
-        locations = other.locations;
 
         return *this;
     }

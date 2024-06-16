@@ -1,6 +1,7 @@
 ﻿#include <SFML/Graphics.hpp> 
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
+#include <SFML/System/Clock.hpp>
 #include <iostream>
 #include <random>
 #include <chrono>
@@ -11,8 +12,8 @@
 #include "Fruit.h"
 #include "Wall.h"
 #include "Global.h"
+#include "Lawnmower.h"
 //to do-------------:(
-//kosiarka
 //pająk
 //naprawić ściany
 
@@ -24,7 +25,7 @@ bool startGame = false;
 
 long int totalScore = 0;
 
-sf::Texture jablko, gruszka, banan, winogrona; 
+sf::Texture jablko, gruszka, banan, winogrona, kosiarka; 
 
 std::vector<Fruit> tab; //wektor do przechowywania owoców 
 
@@ -48,6 +49,7 @@ sf::Vector2f treePositions[] = {
 
 bool takenTrees[] = { false, false, false, false, false, false };
 
+int tabKos[10];
 
 int main(void) {
     sf::RenderWindow window(sf::VideoMode(1000, 650), "Fruit Game", sf::Style::Titlebar | sf::Style::Close);
@@ -80,10 +82,8 @@ int main(void) {
     trawa.loadFromFile("trawakurwa.png"); 
     sf::Texture pudelko;
     pudelko.loadFromFile("pudlo.png");
-    sf::Texture kosiarka;
 
-    sf::Texture pajak;
-
+    kosiarka.loadFromFile("kosiarka.png");
     jablko.loadFromFile("apyl.png");
     gruszka.loadFromFile("gruszka.png");
     banan.loadFromFile("banan.png");
@@ -183,9 +183,8 @@ int main(void) {
     float characterSpeed = 0.15;
 
     sf::Clock fruitClock; //zegary
-    
     sf::Clock gameTime;
-    
+   
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -290,7 +289,7 @@ int main(void) {
 
                 tab[currentFruit].assignTree(treeIndex);
 
-                std::cout << "Owoc wygenerowany na pozycji: " << fruitX << ", " << fruitY << endl;
+                std::cout << "Owoc wygenerowany na pozycji: " << fruitX << " , " << fruitY << endl;
 
                 ++currentFruit;
             }
@@ -298,6 +297,9 @@ int main(void) {
             fruitClock.restart();
         }
 
+        //przejazd kosiarki ------------------------------------------------------------------------------
+        Lawnmower brumbrum(&kosiarka);
+        brumbrum.moveLawnmower();
         
         // Podnoszenie owocu-------------------------------------------------------------------------------
         bool keyPressedE = sf::Keyboard::isKeyPressed(sf::Keyboard::E);
@@ -356,6 +358,8 @@ int main(void) {
             for (auto& fruit : tab) {
                 fruit.drawFruit(window);
             }
+
+            window.draw(brumbrum);
 
             score.setString("SCORE: " + std::to_string(totalScore));
             window.draw(score);
