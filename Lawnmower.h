@@ -41,10 +41,10 @@ public:
 	void moveLawnmower() 
 	{
 		kosiara.move(speed, 0.f);
-		if (kosiara.getPosition().x > 1000.f)
+		if (kosiara.getPosition().x > 1100.f)
 		{
 			kosiara.move(0.f, 0.f);
-			std::this_thread::sleep_for(std::chrono::seconds(rand() % 8 + 3));//poprawiæ-----------------------
+			std::this_thread::sleep_for(std::chrono::seconds(rand() % 3 + 8));
 			setStartingPlace();
 		}
 	}
